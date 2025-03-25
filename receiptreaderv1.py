@@ -3,6 +3,8 @@
 #the data is then saved to a csv file
 #the user can then view the data in the csv file
 #The inputs are processed via a tkinter GUI
+#This line is here to test the git push
+#This line is here to test the git push 2
 #Quazi Heider
 #March 24, 2025
 
@@ -58,7 +60,7 @@ class AddEntry:
         main_frame = tk.Frame(self.window)
         main_frame.pack(expand=True)
 
-        #input fields
+        #input field
         #seller info:   
         tk.Label(main_frame, text="Seller Name:").pack(pady=5)
         self.seller_entry = tk.Entry(main_frame)
