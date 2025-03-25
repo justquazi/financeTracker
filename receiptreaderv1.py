@@ -37,16 +37,13 @@ class ReceiptReaderMainScreen:
         self.add_entry_button.pack(pady=10)
 
         #create a button to view entries
-        self.view_entries_button = tk.Button(button_frame, text="View Entries")
+        self.view_entries_button = tk.Button(button_frame, text="View Entries", command=lambda: ViewEntries())
         self.view_entries_button.pack(pady=10)
 
-        #create a button to edit or delete entries
-        self.edit_entries_button = tk.Button(button_frame, text="Edit Entries")
-        self.edit_entries_button.pack(pady=10)
-
-        #create a button to exit
-        self.exit_button = tk.Button(button_frame, text="Exit", command=self.window.quit)
-        self.exit_button.pack(pady=10)
+        #create a button to exit, move this to the top left corner of the window
+        
+        self.exit_button = tk.Button(self.window, text="Exit", command=self.window.quit)
+        self.exit_button.pack(side=tk.TOP, anchor=tk.NE, padx=10, pady=10)
         
         
         
@@ -109,7 +106,7 @@ class AddEntry:
         #send to file if all validations pass
         self.toCSVFile()
         messagebox.showinfo("Success", "Receipt data saved successfully")
-        #self.window.destroy() # get rid of this line - need to keep the window open for multiple entries but get rid of contents in message box
+        self.window.destroy()
     
     def clear_fields(self):
         #clear fields for next entry
@@ -118,9 +115,65 @@ class AddEntry:
         self.date_entry.delete(0, tk.END)
 
     def toCSVFile(self):
-        with open("recieptEntries.txt", "w") as file:
-            file.write('seller,amount,date\n')
-            file.write(f'{self.seller},{self.amount},{self.date}')
+        with open("recieptEntries.txt", "a") as file:
+            # Only write header if file is empty
+            if file.tell() == 0:
+                file.write('seller,amount,date\n')
+            file.write(f'{self.seller},{self.amount},{self.date}\n')
+
+class ViewEntries:
+    def __init__(self):
+        self.window = tk.Tk()
+        self.window.title("Edit Entry")
+        self.window.geometry("600x600")
+        
+        main_frame = tk.Frame(self.window)
+        main_frame.pack(expand=True)
+
+        #Create a back button in the top left corner
+        back_button = tk.Button(main_frame, text="Back", command=self.window.destroy)
+        back_button.pack(side=tk.LEFT, anchor=tk.NW, padx=10, pady=10)
+
+        # Create a frame to hold the scrollable list
+        list_frame = tk.Frame(self.window)
+        list_frame.pack(expand=True, fill='both', padx=10, pady=10)
+
+        # Create scrollbar
+        scrollbar = tk.Scrollbar(list_frame)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Create listbox
+        self.entries_list = tk.Listbox(list_frame, yscrollcommand=scrollbar.set)
+        self.entries_list.pack(side=tk.LEFT, fill='both', expand=True)
+
+        # Configure scrollbar
+        scrollbar.config(command=self.entries_list.yview)
+
+        # Read and display entries from file
+        try:
+            with open("recieptEntries.txt", "r") as file:
+                entries = file.readlines()
+                if len(entries) > 0:
+                    # Format and display header
+                    header = "Seller                          Amount         Date"
+                    self.entries_list.insert(tk.END, header)
+                    self.entries_list.insert(tk.END, "-" * 54)  # Separator line
+                    
+                    # Display data rows (skip header row from file)
+            
+                    for entry in entries[1:]:
+                    
+                        parts = entry.strip().split(',')
+                        if len(parts) == 3:
+                            seller, amount, date = parts
+                            formatted_entry = f"{seller:<30} ${amount:>10} {date:>12}"
+                            self.entries_list.insert(tk.END, formatted_entry)
+        except FileNotFoundError:
+            messagebox.showerror("Error", "No entries found")
+
+
+        
+        
         
 if __name__ == "__main__":
     app = ReceiptReaderMainScreen()
