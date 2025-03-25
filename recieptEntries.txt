@@ -1,0 +1,2 @@
+seller,amount,date
+Example,500.0,2025-01-01
