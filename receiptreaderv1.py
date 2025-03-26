@@ -3,8 +3,6 @@
 #the data is then saved to a csv file
 #the user can then view the data in the csv file
 #The inputs are processed via a tkinter GUI
-#This line is here to test the git push
-#This line is here to test the git push 2
 #Quazi Heider
 #March 24, 2025
 
@@ -44,8 +42,6 @@ class ReceiptReaderMainScreen:
         
         self.exit_button = tk.Button(self.window, text="Exit", command=self.window.quit)
         self.exit_button.pack(side=tk.TOP, anchor=tk.NE, padx=10, pady=10)
-        
-        
         
 class AddEntry:
     def __init__(self):
@@ -171,8 +167,14 @@ class ViewEntries:
         except FileNotFoundError:
             messagebox.showerror("Error", "No entries found")
 
+class storeDataValues:
+    def __init__(self):
+        self.sellers = []
+        self.amounts = []
+        self.dates = []
 
-        
+   
+
         
         
 if __name__ == "__main__":
